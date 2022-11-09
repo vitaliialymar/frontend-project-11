@@ -13,3 +13,4 @@ rules:
     - error
     - ignorePackages
     - js: always
+  no-param-reassign: 0
