@@ -8,7 +8,7 @@ import 'bootstrap';
 
 const validate = (fields, urls) => {
   const schema = yup.object({
-    url: yup.string().url().min(1).notOneOf(urls),
+    url: yup.string().url().notOneOf(urls),
   });
   try {
     schema.validateSync(fields, { abortEarly: false });
