@@ -4,7 +4,10 @@
   "description": "[![Actions Status](https://github.com/vitaliialymar/frontend-project-11/workflows/hexlet-check/badge.svg)](https://github.com/vitaliialymar/frontend-project-11/actions)",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production",
+    "watch": "webpack --mode development --watch"
   },
   "repository": {
     "type": "git",

@@ -1,14 +1,18 @@
-const makeAnswerHandler = (answer) => {
-  const element = document.querySelector('.feedback');
+const makeAnswerHandler = (elements, answer) => {
+  const { feedback, input } = elements;
   switch (answer) {
     case false:
-      element.textContent = 'Ресурс не содержит валидный RSS';
+      feedback.classList.remove('text-success');
+      feedback.classList.add('text-danger');
+      input.classList.add('is-invalid');
+      feedback.textContent = 'Ресурс не содержит валидный RSS';
       break;
 
     case true:
-      element.classList.remove('text-danger');
-      element.classList.add('text-success');
-      element.textContent = 'RSS успешно загружен';
+      feedback.classList.remove('text-danger');
+      feedback.classList.add('text-success');
+      input.classList.remove('is-invalid');
+      feedback.textContent = 'RSS успешно загружен';
       break;
 
     default:
@@ -42,7 +46,7 @@ const initView = (elements) => (path, value) => {
       break;
 
     case 'form.valid':
-      makeAnswerHandler(value);
+      makeAnswerHandler(elements, value);
       break;
 
     default:

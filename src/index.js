@@ -35,6 +35,7 @@ const app = () => {
     input: document.getElementById('url-input'),
     submit: document.querySelector('button'),
     form: document.querySelector('form'),
+    feedback: document.querySelector('.feedback'),
   };
 
   const watchState = onChange(state, initView(elements));
