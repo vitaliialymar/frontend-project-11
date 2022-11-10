@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import onChange from 'on-change';
 import * as yup from 'yup';
+import i18next from 'i18next';
+import resources from './locales/ru.js';
 // import axios from 'axios';
 import initView from './view.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -19,18 +21,6 @@ const validate = (fields, urls) => {
 };
 
 const app = () => {
-  const state = {
-    form: {
-      fields: {
-        url: '',
-        urls: [],
-      },
-      processState: '',
-      valid: true,
-      errors: {},
-    },
-  };
-
   const elements = {
     input: document.getElementById('url-input'),
     submit: document.querySelector('button'),
@@ -38,22 +28,40 @@ const app = () => {
     feedback: document.querySelector('.feedback'),
   };
 
-  const watchState = onChange(state, initView(elements));
+  i18next.init({
+    lng: 'ru',
+    debug: true,
+    resources,
+  });
+
+  const state = {
+    lng: 'ru',
+    form: {
+      fields: {
+        url: '',
+      },
+      urls: [],
+      processState: '',
+      valid: true,
+      errors: {},
+    },
+  };
+
+  const watchState = onChange(state, initView(elements, i18next));
 
   elements.input.addEventListener('input', (e) => {
     e.preventDefault();
     watchState.form.processState = 'filling';
     const { value } = e.target;
-    console.log(value);
     watchState.form.fields.url = value.trim();
   });
 
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    watchState.form.fields.urls.push(watchState.form.fields.url);
-    const error = validate(watchState.form.fields, watchState.form.fields.urls);
-    console.log(error);
-    console.log(watchState);
+    const error = validate(watchState.form.fields, watchState.form.urls);
+    // console.log(error);
+    // console.log(watchState);
+    watchState.form.urls.push(watchState.form.fields.url);
     watchState.form.errors = { error };
 
     if (!_.isEmpty(watchState.form.errors.error)) {
