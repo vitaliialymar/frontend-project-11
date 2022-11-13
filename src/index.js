@@ -1,28 +1,10 @@
 import onChange from 'on-change';
-import * as yup from 'yup';
 import i18next from 'i18next';
 import resources from './locales/ru.js';
-// import axios from 'axios';
+import getRssData from './getRss.js';
 import handleProcessState from './view.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
-
-const validate = (fields, urls) => {
-  yup.setLocale({
-    mixed: {
-      notOneOf: i18next.t('alreadyAdded'),
-    },
-    string: {
-      url: i18next.t('danger'),
-    },
-  });
-
-  const schema = yup.object({
-    url: yup.string().url()
-      .notOneOf(urls),
-  });
-  return schema.validate(fields);
-};
 
 const app = () => {
   const state = {
@@ -31,6 +13,7 @@ const app = () => {
         url: '',
       },
       urls: [],
+      postsItems: [],
       processState: '',
       valid: true,
       feedbackValue: '',
@@ -42,6 +25,8 @@ const app = () => {
     submit: document.querySelector('button'),
     form: document.querySelector('form'),
     feedback: document.querySelector('.feedback'),
+    feeds: document.querySelector('.feeds'),
+    posts: document.querySelector('.posts'),
   };
 
   i18next.init({
@@ -64,23 +49,7 @@ const app = () => {
 
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const promise = validate(watchState.form.fields, watchState.form.urls);
-      promise
-        .then(() => {
-          watchState.form.feedbackValue = i18next.t('success');
-          watchState.form.urls.push(watchState.form.fields.url);
-          watchState.form.valid = true;
-          watchState.form.processState = 'sending';
-        })
-        .catch((error) => {
-          watchState.form.feedbackValue = error.message;
-          watchState.form.valid = false;
-          watchState.form.processState = 'filling';
-          if (error.message !== i18next.t('danger')) {
-            watchState.form.urls.push(watchState.form.fields.url);
-          }
-        });
-      return promise;
+      getRssData(watchState, i18next, elements);
     });
   });
 };
