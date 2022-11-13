@@ -25,15 +25,19 @@ const getPosts = (dom) => {
   return posts;
 };
 
-const parse = (data) => {
+const parse = (data, watchState, i18next) => {
   const parser = new DOMParser();
   const dom = parser.parseFromString(data, 'application/xml');
+  const error = dom.querySelector('parsererror');
+  if (error) {
+    watchState.form.feedbackValue = i18next.t('danger');
+  }
   return dom;
 };
 
-export default (url, watchState, elements) => getData(url)
+export default (url, watchState, elements, i18next) => getData(url)
   .then((data) => {
-    const dom = parse(data);
+    const dom = parse(data, watchState, i18next);
     watchState.form.valid = true;
     watchState.form.urls.push({ url, ...getFeed(dom) });
     watchState.form.postsItems = getPosts(dom);

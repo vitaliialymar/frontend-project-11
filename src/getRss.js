@@ -4,7 +4,7 @@ import buildData from './utilities.js';
 const getRssData = (watchState, i18next, elements) => {
   validate(watchState.form.fields, watchState.form.urls, i18next)
     .then(() => {
-      buildData(watchState.form.fields.url, watchState, elements);
+      buildData(watchState.form.fields.url, watchState, elements, i18next);
       watchState.form.feedbackValue = i18next.t('success');
       watchState.form.processState = 'sending';
     })
