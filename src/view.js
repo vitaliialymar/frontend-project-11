@@ -83,13 +83,14 @@ export const renderPosts = (elements, state) => {
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     const link = document.createElement('a');
     link.classList.add('fw-bold');
+    link.textContent = post.title;
     link.setAttribute('href', `${post.link}`);
     link.setAttribute('data-id', `${post.id}`);
     link.setAttribute('target', '_blank');
     link.setAttribute('rel', 'noopener noreferrer');
 
     const button = document.createElement('button');
-    button.classList.add('btn', 'border-0', 'rounded-0');
+    button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
     button.setAttribute('type', 'button');
     button.setAttribute('data-id', `${post.id}`);
     button.setAttribute('data-bs-toggle', 'modal');

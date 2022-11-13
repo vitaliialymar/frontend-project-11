@@ -1,4 +1,5 @@
 import axios from 'axios';
+import uniqueId from 'lodash/uniqueId.js';
 import { renderFeeds, renderPosts } from './view.js';
 
 const getData = (url) => axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`)
@@ -14,7 +15,14 @@ const getFeed = (dom) => {
 };
 
 const getPosts = (dom) => {
-
+  const items = dom.querySelectorAll('item');
+  const posts = [];
+  items.forEach((item) => {
+    const title = item.querySelector('title').textContent;
+    const link = item.querySelector('link').textContent;
+    posts.push({ id: uniqueId(), title, link });
+  });
+  return posts;
 };
 
 const parse = (data) => {
@@ -26,10 +34,11 @@ const parse = (data) => {
 export default (url, watchState, elements) => getData(url)
   .then((data) => {
     const dom = parse(data);
+    watchState.form.valid = true;
     watchState.form.urls.push({ url, ...getFeed(dom) });
-    // watchState.form.postsItems.push(getPosts(dom));
+    watchState.form.postsItems = getPosts(dom);
     renderFeeds(elements, watchState);
-    // renderPosts(elements, watchState);
+    renderPosts(elements, watchState);
   })
   .catch((error) => {
     throw error;
