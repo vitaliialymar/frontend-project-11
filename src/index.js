@@ -15,7 +15,7 @@ const app = () => {
       urls: [],
       postsItems: [],
       processState: '',
-      valid: true,
+      valid: null,
       feedbackValue: '',
     },
   };

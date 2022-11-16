@@ -18,6 +18,7 @@ const handleProcessState = (elements, state) => {
       feedback.textContent = feedbackValue;
       elements.input.disabled = false;
       elements.submit.disabled = false;
+      state.form.valid = '';
       elements.form.reset();
       elements.form.focus();
       break;
@@ -31,18 +32,24 @@ export const renderFeeds = (elements, state) => {
   const { feeds } = elements;
   const { urls } = state.form;
 
-  const feedsContainer = document.createElement('div');
-  feedsContainer.classList.add('card', 'border-0');
+  if (urls.length <= 1) {
+    const feedsContainer = document.createElement('div');
+    feedsContainer.classList.add('card', 'border-0');
 
-  const div = document.createElement('div');
-  div.classList.add('card-body');
-  const h2 = document.createElement('h2');
-  h2.classList.add('card-title', 'h4');
-  h2.textContent = 'Фиды';
-  div.prepend(h2);
+    const div = document.createElement('div');
+    div.classList.add('card-body');
+    const h2 = document.createElement('h2');
+    h2.classList.add('card-title', 'h4');
+    h2.textContent = 'Фиды';
+    div.prepend(h2);
+    const ul = document.createElement('ul');
+    ul.classList.add('list-group', 'border-0', 'rounded-0');
+    feedsContainer.append(div, ul);
+    feeds.append(feedsContainer);
+  }
 
-  const ul = document.createElement('ul');
-  ul.classList.add('list-group', 'border-0', 'rounded-0');
+  const feedsList = feeds.querySelector('ul');
+  feedsList.innerHTML = '';
 
   urls.forEach((url) => {
     const li = document.createElement('li');
@@ -54,29 +61,33 @@ export const renderFeeds = (elements, state) => {
     description.classList.add('m-0', 'small', 'text-black-50');
     description.textContent = url.description;
     li.append(title, description);
-    ul.append(li);
+    feedsList.append(li);
   });
-
-  feedsContainer.append(div, ul);
-  feeds.append(feedsContainer);
 };
 
 export const renderPosts = (elements, state) => {
   const { posts } = elements;
-  const { postsItems } = state.form;
+  const { postsItems, urls } = state.form;
 
-  const postContainer = document.createElement('div');
-  postContainer.classList.add('card', 'border-0');
+  if (urls.length <= 1) {
+    const postContainer = document.createElement('div');
+    postContainer.classList.add('card', 'border-0');
 
-  const div = document.createElement('div');
-  div.classList.add('card-body');
-  const h2 = document.createElement('h2');
-  h2.classList.add('card-title', 'h4');
-  h2.textContent = 'Посты';
-  div.prepend(h2);
+    const div = document.createElement('div');
+    div.classList.add('card-body');
+    const h2 = document.createElement('h2');
+    h2.classList.add('card-title', 'h4');
+    h2.textContent = 'Посты';
+    div.prepend(h2);
 
-  const ul = document.createElement('ul');
-  ul.classList.add('list-group', 'border-0', 'rounded-0');
+    const ul = document.createElement('ul');
+    ul.classList.add('list-group', 'border-0', 'rounded-0');
+    postContainer.append(div, ul);
+    posts.append(postContainer);
+  }
+
+  const postsList = posts.querySelector('ul');
+  postsList.innerHTML = '';
 
   postsItems.forEach((post) => {
     const li = document.createElement('li');
@@ -98,11 +109,8 @@ export const renderPosts = (elements, state) => {
     button.textContent = 'Просмотр';
 
     li.append(link, button);
-    ul.append(li);
+    postsList.append(li);
   });
-
-  postContainer.append(div, ul);
-  posts.append(postContainer);
 };
 
 export default handleProcessState;
