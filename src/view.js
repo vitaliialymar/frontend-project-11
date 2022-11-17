@@ -67,9 +67,10 @@ export const renderFeeds = (elements, state) => {
 
 export const renderPosts = (elements, state) => {
   const { posts } = elements;
-  const { postsItems, urls } = state.form;
+  const { postsItems } = state.form;
 
-  if (urls.length <= 1) {
+  const postsDiv = posts.querySelector('div');
+  if (!postsDiv) {
     const postContainer = document.createElement('div');
     postContainer.classList.add('card', 'border-0');
 
