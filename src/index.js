@@ -2,7 +2,7 @@ import onChange from 'on-change';
 import i18next from 'i18next';
 import resources from './locales/ru.js';
 import getRssData from './getRss.js';
-import handleProcessState from './view.js';
+import handleProcessState, { renderModal, openPost } from './view.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
@@ -14,9 +14,11 @@ const app = () => {
       },
       urls: [],
       postsItems: [],
+      openPosts: [],
       processState: '',
       valid: null,
       feedbackValue: '',
+      modal: null,
     },
   };
 
@@ -50,6 +52,16 @@ const app = () => {
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
       getRssData(watchState, i18next, elements);
+    });
+
+    elements.posts.addEventListener('click', (e) => {
+      const { id } = e.target.dataset;
+      if (id !== undefined) {
+        watchState.form.modal = id;
+        watchState.form.openPosts.push(id);
+        renderModal(watchState);
+        openPost(id);
+      }
     });
   });
 };

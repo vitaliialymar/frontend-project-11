@@ -114,4 +114,20 @@ export const renderPosts = (elements, state) => {
   });
 };
 
+export const renderModal = (state) => {
+  const { postsItems, modal } = state.form;
+  const title = document.querySelector('.modal-title');
+  const description = document.querySelector('.modal-body');
+  const href = document.querySelector('.full-article');
+  const currentPost = postsItems.find((post) => post.id === modal);
+  title.textContent = currentPost.title;
+  description.textContent = currentPost.description;
+  href.href = currentPost.link;
+};
+
+export const openPost = (id) => {
+  const element = document.querySelector(`a[data-id="${id}"]`);
+  element.classList.replace('fw-bold', 'fw-normal');
+};
+
 export default handleProcessState;

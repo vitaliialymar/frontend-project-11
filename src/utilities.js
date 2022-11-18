@@ -21,7 +21,10 @@ const getPosts = (dom) => {
   items.forEach((item) => {
     const title = item.querySelector('title').textContent;
     const link = item.querySelector('link').textContent;
-    posts.push({ id: uniqueId(), title, link });
+    const description = item.querySelector('description').textContent;
+    posts.push({
+      id: uniqueId(), title, link, description,
+    });
   });
   return posts;
 };
@@ -48,7 +51,9 @@ const updatePosts = (watchState, elements, i18next) => {
         const current = getPosts(dom);
         const currentPostsTitles = current.map((post) => post.title);
         const difference = currentPostsTitles.filter((title) => !oldPostsTitles.includes(title));
-        if (isEmpty(difference)) return;
+        if (isEmpty(difference)) {
+          return;
+        }
         const newPosts = difference.map((title) => current.find((post) => post.title === title));
         newPosts.forEach((post) => postsItems.unshift(post));
         renderPosts(elements, watchState);
