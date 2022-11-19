@@ -3,10 +3,11 @@ import uniqueId from 'lodash/uniqueId.js';
 import isEmpty from 'lodash/isEmpty';
 import { renderFeeds, renderPosts } from './view.js';
 
-const getData = (url) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
+const getData = (url, watchState, i18next) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
   .then((response) => response.data.contents)
-  .catch((error) => {
-    throw error;
+  .catch(() => {
+    watchState.form.feedbackValue = i18next.t('networkError');
+    watchState.form.valid = false;
   });
 
 const getFeed = (dom, watchState, url) => {
@@ -29,24 +30,25 @@ const getPosts = (dom) => {
   return posts;
 };
 
-const parse = (data) => {
+const parse = (data, watchState, i18next) => {
   const parser = new DOMParser();
   const dom = parser.parseFromString(data, 'application/xml');
   const error = dom.querySelector('parsererror');
   if (error) {
-    throw new Error('Error!');
+    watchState.form.feedbackValue = i18next.t('danger');
+    watchState.form.valid = false;
   }
   return dom;
 };
 
 const updatePosts = (watchState, elements, i18next) => {
   const { urls, postsItems } = watchState.form;
-  const currentPosts = urls.map((item) => getData(item.url));
+  const currentPosts = urls.map((item) => getData(item.url, watchState, i18next));
 
   const promise = Promise.all(currentPosts)
     .then((datas) => {
       datas.forEach((data) => {
-        const dom = parse(data);
+        const dom = parse(data, watchState, i18next);
         const oldPostsTitles = postsItems.map((post) => post.title);
         const current = getPosts(dom);
         const currentPostsTitles = current.map((post) => post.title);
@@ -60,21 +62,26 @@ const updatePosts = (watchState, elements, i18next) => {
       });
     });
 
-  return promise.then(() => setTimeout(() => updatePosts(watchState, elements, i18next), 5000));
+  return promise.then(() => setTimeout(() => updatePosts(watchState, elements, i18next), 5000))
+    .catch((error) => {
+      throw error;
+    });
 };
 
-export default (url, watchState, elements, i18next) => getData(url)
+export default (url, watchState, elements, i18next) => getData(url, watchState, i18next)
   .then((data) => {
     const { postsItems } = watchState.form;
-    const dom = parse(data);
-    watchState.form.valid = true;
+    const dom = parse(data, watchState, i18next);
     getFeed(dom, watchState, url);
     const posts = getPosts(dom);
     posts.forEach((post) => postsItems.push(post));
     renderFeeds(elements, watchState);
     renderPosts(elements, watchState);
     updatePosts(watchState, elements, i18next);
+
+    watchState.form.valid = true;
+    watchState.form.fields.url = '';
   })
-  .catch((error) => {
-    throw error;
+  .catch(() => {
+    watchState.form.valid = false;
   });

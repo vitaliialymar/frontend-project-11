@@ -4,7 +4,6 @@
   "description": "[![Actions Status](https://github.com/vitaliialymar/frontend-project-11/workflows/hexlet-check/badge.svg)](https://github.com/vitaliialymar/frontend-project-11/actions)",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --mode development",
     "build": "webpack --mode production",
     "watch": "webpack --mode development --watch"
@@ -22,6 +21,7 @@
   "devDependencies": {
     "@babel/core": "^7.19.6",
     "@babel/preset-env": "^7.19.4",
+    "@playwright/test": "^1.28.0",
     "autoprefixer": "^10.4.12",
     "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",

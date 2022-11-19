@@ -7,6 +7,7 @@ const handleProcessState = (elements, state) => {
       feedback.classList.add('text-danger');
       input.classList.add('is-invalid');
       feedback.textContent = feedbackValue;
+      state.form.valid = null;
       elements.input.disabled = false;
       elements.submit.disabled = false;
       break;
@@ -18,7 +19,7 @@ const handleProcessState = (elements, state) => {
       feedback.textContent = feedbackValue;
       elements.input.disabled = false;
       elements.submit.disabled = false;
-      state.form.valid = '';
+      state.form.valid = null;
       elements.form.reset();
       elements.form.focus();
       break;
