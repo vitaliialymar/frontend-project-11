@@ -13,10 +13,14 @@ const getData = (url, watchState, i18next) => axios.get(`https://allorigins.hexl
 const getFeed = (dom, watchState, url) => {
   const title = dom.querySelector('title').textContent;
   const description = dom.querySelector('description').textContent;
-  watchState.form.urls.push({ url, title, description });
+  watchState.form.urls.push({
+    id: uniqueId(), url, title, description,
+  });
 };
 
-const getPosts = (dom) => {
+const getPosts = (dom, watchState, url) => {
+  const { urls } = watchState.form;
+  const currentUrl = urls.find((item) => item.url === url);
   const items = dom.querySelectorAll('item');
   const posts = [];
   items.forEach((item) => {
@@ -24,7 +28,7 @@ const getPosts = (dom) => {
     const link = item.querySelector('link').textContent;
     const description = item.querySelector('description').textContent;
     posts.push({
-      id: uniqueId(), title, link, description,
+      feedId: currentUrl.id, id: uniqueId(), title, link, description,
     });
   });
   return posts;
@@ -37,51 +41,49 @@ const parse = (data, watchState, i18next) => {
   if (error) {
     watchState.form.feedbackValue = i18next.t('danger');
     watchState.form.valid = false;
+    console.log(error.querySelector('div').textContent);
   }
   return dom;
 };
 
-const updatePosts = (watchState, elements, i18next) => {
-  const { urls, postsItems } = watchState.form;
-  const currentPosts = urls.map((item) => getData(item.url, watchState, i18next));
+const updatePosts = (url, watchState, elements, i18next) => {
+  const { postsItems, urls } = watchState.form;
+  const currentUrl = urls.find((item) => item.url === url);
+  const oldPostsItems = postsItems.filter((item) => item.feedId === currentUrl.id);
+  const oldPostsTitles = oldPostsItems.map((post) => post.title);
 
-  const promise = Promise.all(currentPosts)
-    .then((datas) => {
-      datas.forEach((data) => {
-        const dom = parse(data, watchState, i18next);
-        const oldPostsTitles = postsItems.map((post) => post.title);
-        const current = getPosts(dom);
-        const currentPostsTitles = current.map((post) => post.title);
-        const difference = currentPostsTitles.filter((title) => !oldPostsTitles.includes(title));
-        if (isEmpty(difference)) {
-          return;
-        }
-        const newPosts = difference.map((title) => current.find((post) => post.title === title));
-        newPosts.forEach((post) => postsItems.unshift(post));
-        renderPosts(elements, watchState);
-      });
-    });
+  return getData(url, watchState, i18next)
+    .then((data) => {
+      const dom = parse(data, watchState, i18next);
 
-  return promise.then(() => setTimeout(() => updatePosts(watchState, elements, i18next), 5000))
-    .catch((error) => {
-      throw error;
-    });
+      const currentPosts = getPosts(dom, watchState, url);
+      const currentPostsTitles = currentPosts.map((post) => post.title);
+      const difference = currentPostsTitles.filter((title) => !oldPostsTitles.includes(title));
+      if (isEmpty(difference)) {
+        return;
+      }
+      const newPosts = difference.map((title) => currentPosts
+        .filter((post) => post.title === title));
+      watchState.form.postsItems.unshift(...newPosts.flat());
+    })
+    .catch((e) => console.log(e.message))
+    .then(() => setTimeout(() => updatePosts(url, watchState, elements, i18next), 5000));
 };
 
 export default (url, watchState, elements, i18next) => getData(url, watchState, i18next)
   .then((data) => {
-    const { postsItems } = watchState.form;
     const dom = parse(data, watchState, i18next);
     getFeed(dom, watchState, url);
-    const posts = getPosts(dom);
-    posts.forEach((post) => postsItems.push(post));
+    const posts = getPosts(dom, watchState, url);
+    watchState.form.postsItems.push(...posts);
     renderFeeds(elements, watchState);
-    renderPosts(elements, watchState);
-    updatePosts(watchState, elements, i18next);
+    renderPosts(elements, watchState, i18next);
+    updatePosts(url, watchState, elements, i18next);
 
     watchState.form.valid = true;
     watchState.form.fields.url = '';
   })
-  .catch(() => {
+  .catch((e) => {
     watchState.form.valid = false;
+    console.log(e.message);
   });

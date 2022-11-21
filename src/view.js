@@ -66,7 +66,7 @@ export const renderFeeds = (elements, state) => {
   });
 };
 
-export const renderPosts = (elements, state) => {
+export const renderPosts = (elements, state, i18next) => {
   const { posts } = elements;
   const { postsItems } = state.form;
 
@@ -108,7 +108,7 @@ export const renderPosts = (elements, state) => {
     button.setAttribute('data-id', `${post.id}`);
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#modal');
-    button.textContent = 'Просмотр';
+    button.textContent = i18next.t('button');
 
     li.append(link, button);
     postsList.append(li);

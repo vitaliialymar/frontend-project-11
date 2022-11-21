@@ -7,6 +7,7 @@ export default {
       toBeURL: 'Ссылка должна быть валидным URL',
       networkError: 'Ошибка сети',
       success: 'RSS успешно загружен',
+      button: 'Просмотр',
     },
   },
 };

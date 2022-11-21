@@ -12,7 +12,6 @@ const getRssData = (watchState, i18next, elements) => {
       watchState.form.feedbackValue = error.message;
       watchState.form.valid = false;
       watchState.form.processState = 'filling';
-      console.log(watchState);
     });
 };
 
