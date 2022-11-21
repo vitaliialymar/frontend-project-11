@@ -2,7 +2,9 @@ import onChange from 'on-change';
 import i18next from 'i18next';
 import resources from './locales/ru.js';
 import getRssData from './getRss.js';
-import handleProcessState, { renderModal, openPost, renderPosts } from './view.js';
+import handleProcessState, {
+  renderModal, openPost, renderPosts, renderFeeds,
+} from './view.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
@@ -39,6 +41,9 @@ const app = () => {
     const watchState = onChange(state, (path) => {
       if (path === 'form.valid') {
         handleProcessState(elements, state);
+      }
+      if (path === 'form.urls') {
+        renderFeeds(elements, state);
       }
       if (path === 'form.postsItems') {
         renderPosts(elements, state, i18next);
