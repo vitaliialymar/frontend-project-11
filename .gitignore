@@ -1,6 +1,3 @@
 dist
 node_modules
 .babelrc
-/test-results/
-/playwright-report/
-/playwright/.cache/
