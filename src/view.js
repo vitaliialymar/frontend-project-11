@@ -1,10 +1,11 @@
-const handleProcessState = (elements, state) => {
+import onChange from 'on-change';
+
+const handleValidForm = (elements, state) => {
   const { feedback, input } = elements;
   const { valid, feedbackValue } = state.form;
   switch (valid) {
     case false:
-      feedback.classList.remove('text-success');
-      feedback.classList.add('text-danger');
+      feedback.classList.replace('text-success', 'text-danger');
       input.classList.add('is-invalid');
       feedback.textContent = feedbackValue;
       state.form.valid = null;
@@ -13,8 +14,7 @@ const handleProcessState = (elements, state) => {
       break;
 
     case true:
-      feedback.classList.remove('text-danger');
-      feedback.classList.add('text-success');
+      feedback.classList.replace('text-danger', 'text-success');
       input.classList.remove('is-invalid');
       feedback.textContent = feedbackValue;
       elements.input.disabled = false;
@@ -29,7 +29,7 @@ const handleProcessState = (elements, state) => {
   }
 };
 
-export const renderFeeds = (elements, state) => {
+const renderFeeds = (elements, state) => {
   const { feeds } = elements;
   const { urls } = state.form;
 
@@ -66,7 +66,7 @@ export const renderFeeds = (elements, state) => {
   });
 };
 
-export const renderPosts = (elements, state, i18next) => {
+const renderPosts = (elements, state, i18next) => {
   const { posts } = elements;
   const { postsItems } = state.form;
 
@@ -115,7 +115,7 @@ export const renderPosts = (elements, state, i18next) => {
   });
 };
 
-export const renderModal = (state) => {
+const renderModal = (state) => {
   const { postsItems, modal } = state.form;
   const title = document.querySelector('.modal-title');
   const description = document.querySelector('.modal-body');
@@ -126,9 +126,40 @@ export const renderModal = (state) => {
   href.href = currentPost.link;
 };
 
-export const openPost = (id) => {
-  const element = document.querySelector(`a[data-id="${id}"]`);
-  element.classList.replace('fw-bold', 'fw-normal');
+const openPost = (state) => {
+  const { openPosts } = state.form;
+  openPosts.forEach((id) => {
+    const element = document.querySelector(`a[data-id="${id}"]`);
+    element.classList.replace('fw-bold', 'fw-normal');
+  });
 };
 
-export default handleProcessState;
+const watch = (elements, state, i18next) => onChange(state, (path) => {
+  switch (path) {
+    case 'form.valid': {
+      handleValidForm(elements, state);
+      break;
+    }
+    case 'form.urls': {
+      renderFeeds(elements, state);
+      break;
+    }
+    case 'form.postsItems': {
+      renderPosts(elements, state, i18next);
+      openPost(state);
+      break;
+    }
+    case 'form.modal': {
+      renderModal(state);
+      break;
+    }
+    case 'form.openPosts': {
+      openPost(state);
+      break;
+    }
+    default:
+      break;
+  }
+});
+
+export default watch;
