@@ -34,28 +34,28 @@ const app = () => {
     lng: 'ru',
     debug: false,
     resources,
-  });
+  }).then(() => {
+    const watchState = watch(elements, state, i18next);
 
-  const watchState = watch(elements, state, i18next);
+    elements.input.addEventListener('input', (e) => {
+      e.preventDefault();
+      watchState.form.processState = 'filling';
+      const { value } = e.target;
+      watchState.form.fields.url = value.trim();
+    });
 
-  elements.input.addEventListener('input', (e) => {
-    e.preventDefault();
-    watchState.form.processState = 'filling';
-    const { value } = e.target;
-    watchState.form.fields.url = value.trim();
-  });
+    elements.form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      getRssData(watchState, i18next, elements);
+    });
 
-  elements.form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    getRssData(watchState, i18next, elements);
-  });
-
-  elements.posts.addEventListener('click', (e) => {
-    const { id } = e.target.dataset;
-    if (id !== undefined) {
-      watchState.form.modal = id;
-      watchState.form.openPosts.push(id);
-    }
+    elements.posts.addEventListener('click', (e) => {
+      const { id } = e.target.dataset;
+      if (id !== undefined) {
+        watchState.form.modal = id;
+        watchState.form.openPosts.push(id);
+      }
+    });
   });
 };
 

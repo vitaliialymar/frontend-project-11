@@ -1,17 +1,17 @@
 import validate from './validator.js';
-import {
-  getData, getFeed, getPosts, parse, updatePosts,
-} from './utilities.js';
+import { getData, parse, updatePosts } from './utilities.js';
 
 const getRssData = (watchState, i18next, elements) => {
-  validate(watchState.form.fields, watchState.form.urls, i18next)
-    .then(() => getData(watchState.form.fields.url, i18next))
+  const { fields, urls } = watchState.form;
+  const { url } = fields;
+
+  validate(fields, urls, i18next)
+    .then(() => getData(url, i18next))
     .then((data) => {
-      const dom = parse(data, i18next);
-      getFeed(dom, watchState, watchState.form.fields.url);
-      const posts = getPosts(dom, watchState, watchState.form.fields.url);
-      watchState.form.postsItems.push(...posts);
-      updatePosts(watchState.form.fields.url, watchState, elements, i18next);
+      const dom = parse(data, i18next, url);
+      watchState.form.urls.push(dom.feed);
+      watchState.form.postsItems.push(...dom.posts);
+      updatePosts(url, watchState, elements, i18next);
 
       watchState.form.fields.url = '';
       watchState.form.feedbackValue = i18next.t('success');
