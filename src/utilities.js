@@ -53,7 +53,6 @@ const updatePosts = (url, watchState) => {
   return getData(url)
     .then((data) => {
       const { posts } = parse(data, url);
-      console.log('1');
 
       const currentPosts = posts;
       const difference = _.differenceBy(currentPosts, postsItems, 'title');
