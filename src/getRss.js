@@ -11,7 +11,6 @@ const getRssData = (watchState, i18next) => {
       const { posts, ...feed } = parse(data, url);
       watchState.form.urls.push(feed);
       watchState.form.postsItems.push(...posts);
-      console.log(watchState);
       updatePosts(url, watchState, i18next);
 
       watchState.form.fields.url = '';
