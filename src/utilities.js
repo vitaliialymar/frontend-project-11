@@ -2,19 +2,23 @@ import axios from 'axios';
 import uniqueId from 'lodash/uniqueId.js';
 import _ from 'lodash';
 
-const getData = (url, i18next) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
-  .then((response) => response.data.contents)
-  .catch(() => {
-    throw new Error(`${i18next.t('networkError')}`);
-  });
+class ParsingError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'ParsingError';
+  }
+}
 
-const parse = (data, i18next, url) => {
+const getData = (url) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
+  .then((response) => response.data.contents);
+
+const parse = (data, url) => {
   const parser = new DOMParser();
   const dom = parser.parseFromString(data, 'application/xml');
   const error = dom.querySelector('parsererror');
   if (error) {
     console.log(error.querySelector('div').textContent);
-    throw new Error(`${i18next.t('danger')}`);
+    throw new ParsingError('ParsingError!');
   }
 
   const getFeed = () => {
@@ -40,17 +44,18 @@ const parse = (data, i18next, url) => {
   const feed = getFeed();
   const posts = getPosts();
 
-  return { feed, posts };
+  return { ...feed, posts };
 };
 
-const updatePosts = (url, watchState, elements, i18next) => {
+const updatePosts = (url, watchState) => {
   const { postsItems } = watchState.form;
 
-  return getData(url, i18next)
+  return getData(url)
     .then((data) => {
-      const dom = parse(data, i18next, url);
+      const { posts } = parse(data, url);
+      console.log('1');
 
-      const currentPosts = dom.posts;
+      const currentPosts = posts;
       const difference = _.differenceBy(currentPosts, postsItems, 'title');
       if (_.isEmpty(difference)) {
         return;
@@ -58,7 +63,7 @@ const updatePosts = (url, watchState, elements, i18next) => {
       watchState.form.postsItems.unshift(...difference);
     })
     .catch((e) => console.log(e.message))
-    .then(() => setTimeout(() => updatePosts(url, watchState, elements, i18next), 5000));
+    .finally(() => setTimeout(() => updatePosts(url, watchState), 5000));
 };
 
 export {

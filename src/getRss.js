@@ -1,17 +1,18 @@
 import validate from './validator.js';
 import { getData, parse, updatePosts } from './utilities.js';
 
-const getRssData = (watchState, i18next, elements) => {
+const getRssData = (watchState, i18next) => {
   const { fields, urls } = watchState.form;
   const { url } = fields;
 
   validate(fields, urls, i18next)
-    .then(() => getData(url, i18next))
+    .then(() => getData(url))
     .then((data) => {
-      const dom = parse(data, i18next, url);
-      watchState.form.urls.push(dom.feed);
-      watchState.form.postsItems.push(...dom.posts);
-      updatePosts(url, watchState, elements, i18next);
+      const { posts, ...feed } = parse(data, url);
+      watchState.form.urls.push(feed);
+      watchState.form.postsItems.push(...posts);
+      console.log(watchState);
+      updatePosts(url, watchState, i18next);
 
       watchState.form.fields.url = '';
       watchState.form.feedbackValue = i18next.t('success');
@@ -19,7 +20,19 @@ const getRssData = (watchState, i18next, elements) => {
       watchState.form.valid = true;
     })
     .catch((error) => {
-      watchState.form.feedbackValue = error.message;
+      switch (error.name) {
+        case 'AxiosError':
+          watchState.form.feedbackValue = i18next.t('networkError');
+          break;
+        case 'ValidationError':
+          watchState.form.feedbackValue = error.message;
+          break;
+        case 'ParsingError':
+          watchState.form.feedbackValue = i18next.t('danger');
+          break;
+        default:
+          throw new Error('Unknown Error!');
+      }
       watchState.form.valid = false;
       watchState.form.processState = 'filling';
     });
