@@ -1,13 +1,13 @@
 import * as yup from 'yup';
 
-export default (fields, urls, i18next) => {
+export default (fields, urls) => {
   yup.setLocale({
     mixed: {
-      notOneOf: i18next.t('alreadyAdded'),
-      required: i18next.t('notToBeEmpty'),
+      notOneOf: 'alreadyAdded',
+      required: 'notToBeEmpty',
     },
     string: {
-      url: i18next.t('toBeURL'),
+      url: 'toBeURL',
     },
   });
 

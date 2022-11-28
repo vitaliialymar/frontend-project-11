@@ -48,7 +48,7 @@ const parse = (data, url) => {
 };
 
 const updatePosts = (url, watchState) => {
-  const { postsItems } = watchState.form;
+  const { postsItems } = watchState;
 
   return getData(url)
     .then((data) => {
@@ -59,7 +59,7 @@ const updatePosts = (url, watchState) => {
       if (_.isEmpty(difference)) {
         return;
       }
-      watchState.form.postsItems.unshift(...difference);
+      watchState.postsItems.unshift(...difference);
     })
     .catch((e) => console.log(e.message))
     .finally(() => setTimeout(() => updatePosts(url, watchState), 5000));

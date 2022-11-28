@@ -6,6 +6,7 @@ export default {
       notToBeEmpty: 'Не должно быть пустым',
       toBeURL: 'Ссылка должна быть валидным URL',
       networkError: 'Ошибка сети',
+      generalError: 'Что-то пошло не так...',
       success: 'RSS успешно загружен',
       button: 'Просмотр',
     },

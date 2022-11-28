@@ -11,14 +11,14 @@ const app = () => {
       fields: {
         url: '',
       },
-      urls: [],
-      postsItems: [],
-      openPosts: [],
       processState: '',
       valid: null,
       feedbackValue: '',
-      modal: null,
     },
+    feedsItems: [],
+    postsItems: [],
+    openPosts: [],
+    modal: null,
   };
 
   const elements = {
@@ -46,14 +46,14 @@ const app = () => {
 
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
-      getRssData(watchState, i18next, elements);
+      getRssData(watchState);
     });
 
     elements.posts.addEventListener('click', (e) => {
       const { id } = e.target.dataset;
       if (id !== undefined) {
-        watchState.form.modal = id;
-        watchState.form.openPosts.push(id);
+        watchState.modal = id;
+        watchState.openPosts.push(id);
       }
     });
   });

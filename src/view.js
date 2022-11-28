@@ -1,13 +1,13 @@
 import onChange from 'on-change';
 
-const handleValidForm = (elements, state) => {
+const handleValidForm = (elements, state, i18next) => {
   const { feedback, input } = elements;
   const { valid, feedbackValue } = state.form;
   switch (valid) {
     case false:
       feedback.classList.replace('text-success', 'text-danger');
       input.classList.add('is-invalid');
-      feedback.textContent = feedbackValue;
+      feedback.textContent = i18next.t(feedbackValue);
       state.form.valid = null;
       elements.input.disabled = false;
       elements.submit.disabled = false;
@@ -16,7 +16,7 @@ const handleValidForm = (elements, state) => {
     case true:
       feedback.classList.replace('text-danger', 'text-success');
       input.classList.remove('is-invalid');
-      feedback.textContent = feedbackValue;
+      feedback.textContent = i18next.t(feedbackValue);
       elements.input.disabled = false;
       elements.submit.disabled = false;
       state.form.valid = null;
@@ -31,9 +31,9 @@ const handleValidForm = (elements, state) => {
 
 const renderFeeds = (elements, state) => {
   const { feeds } = elements;
-  const { urls } = state.form;
+  const { feedsItems } = state;
 
-  if (urls.length <= 1) {
+  if (feedsItems.length <= 1) {
     const feedsContainer = document.createElement('div');
     feedsContainer.classList.add('card', 'border-0');
 
@@ -52,7 +52,7 @@ const renderFeeds = (elements, state) => {
   const feedsList = feeds.querySelector('ul');
   feedsList.innerHTML = '';
 
-  urls.forEach((url) => {
+  feedsItems.forEach((url) => {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'border-0', 'border-end-0');
     const title = document.createElement('h3');
@@ -68,7 +68,7 @@ const renderFeeds = (elements, state) => {
 
 const renderPosts = (elements, state, i18next) => {
   const { posts } = elements;
-  const { postsItems } = state.form;
+  const { postsItems } = state;
 
   const postsDiv = posts.querySelector('div');
   if (!postsDiv) {
@@ -116,7 +116,7 @@ const renderPosts = (elements, state, i18next) => {
 };
 
 const renderModal = (state) => {
-  const { postsItems, modal } = state.form;
+  const { postsItems, modal } = state;
   const title = document.querySelector('.modal-title');
   const description = document.querySelector('.modal-body');
   const href = document.querySelector('.full-article');
@@ -127,7 +127,7 @@ const renderModal = (state) => {
 };
 
 const openPost = (state) => {
-  const { openPosts } = state.form;
+  const { openPosts } = state;
   openPosts.forEach((id) => {
     const element = document.querySelector(`a[data-id="${id}"]`);
     element.classList.replace('fw-bold', 'fw-normal');
@@ -137,23 +137,23 @@ const openPost = (state) => {
 const watch = (elements, state, i18next) => onChange(state, (path) => {
   switch (path) {
     case 'form.valid': {
-      handleValidForm(elements, state);
+      handleValidForm(elements, state, i18next);
       break;
     }
-    case 'form.urls': {
+    case 'feedsItems': {
       renderFeeds(elements, state);
       break;
     }
-    case 'form.postsItems': {
+    case 'postsItems': {
       renderPosts(elements, state, i18next);
       openPost(state);
       break;
     }
-    case 'form.modal': {
+    case 'modal': {
       renderModal(state);
       break;
     }
-    case 'form.openPosts': {
+    case 'openPosts': {
       openPost(state);
       break;
     }
