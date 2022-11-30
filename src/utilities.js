@@ -47,12 +47,12 @@ const parse = (data, url) => {
   return { ...feed, posts };
 };
 
-const updatePosts = (url, watchState) => {
-  const { postsItems } = watchState;
+const updatePosts = (watchState) => {
+  const { feedsItems, postsItems } = watchState;
 
-  return getData(url)
+  feedsItems.forEach((feed) => getData(feed.url)
     .then((data) => {
-      const { posts } = parse(data, url);
+      const { posts } = parse(data, feed.url);
 
       const currentPosts = posts;
       const difference = _.differenceBy(currentPosts, postsItems, 'title');
@@ -62,7 +62,7 @@ const updatePosts = (url, watchState) => {
       watchState.postsItems.unshift(...difference);
     })
     .catch((e) => console.log(e.message))
-    .finally(() => setTimeout(() => updatePosts(url, watchState), 5000));
+    .finally(() => setTimeout(() => updatePosts(watchState), 5000)));
 };
 
 export {

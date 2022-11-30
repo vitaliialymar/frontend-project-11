@@ -1,5 +1,5 @@
 import validate from './validator.js';
-import { getData, parse, updatePosts } from './utilities.js';
+import { getData, parse } from './utilities.js';
 
 const getRssData = (watchState) => {
   const { form, feedsItems } = watchState;
@@ -11,7 +11,6 @@ const getRssData = (watchState) => {
       const { posts, ...feed } = parse(data, url);
       watchState.feedsItems.push(feed);
       watchState.postsItems.push(...posts);
-      updatePosts(url, watchState);
 
       watchState.form.fields.url = '';
       watchState.form.feedbackValue = 'success';
