@@ -2,6 +2,7 @@ import i18next from 'i18next';
 import resources from './locales/ru.js';
 import getRssData from './getRss.js';
 import watch from './view.js';
+import { updatePosts } from './utilities.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
@@ -34,29 +35,30 @@ const app = () => {
     lng: 'ru',
     debug: false,
     resources,
-  }).then(() => {
-    const watchState = watch(elements, state, i18next);
+  }).then(() => updatePosts(state))
+    .then(() => {
+      const watchState = watch(elements, state, i18next);
 
-    elements.input.addEventListener('input', (e) => {
-      e.preventDefault();
-      watchState.form.processState = 'filling';
-      const { value } = e.target;
-      watchState.form.fields.url = value.trim();
-    });
+      elements.input.addEventListener('input', (e) => {
+        e.preventDefault();
+        watchState.form.processState = 'filling';
+        const { value } = e.target;
+        watchState.form.fields.url = value.trim();
+      });
 
-    elements.form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      getRssData(watchState);
-    });
+      elements.form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        getRssData(watchState);
+      });
 
-    elements.posts.addEventListener('click', (e) => {
-      const { id } = e.target.dataset;
-      if (id !== undefined) {
-        watchState.modal = id;
-        watchState.openPosts.push(id);
-      }
+      elements.posts.addEventListener('click', (e) => {
+        const { id } = e.target.dataset;
+        if (id !== undefined) {
+          watchState.modal = id;
+          watchState.openPosts.push(id);
+        }
+      });
     });
-  });
 };
 
 app();

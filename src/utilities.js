@@ -61,8 +61,9 @@ const updatePosts = (watchState) => {
       }
       watchState.postsItems.unshift(...difference);
     })
-    .catch((e) => console.log(e.message))
-    .finally(() => setTimeout(() => updatePosts(watchState), 5000)));
+    .catch((e) => console.log(e.message)));
+
+  setTimeout(() => updatePosts(watchState), 5000);
 };
 
 export {

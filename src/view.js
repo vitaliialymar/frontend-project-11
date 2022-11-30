@@ -1,5 +1,4 @@
 import onChange from 'on-change';
-import { updatePosts } from './utilities.js';
 
 const handleValidForm = (elements, state, i18next) => {
   const { feedback, input } = elements;
@@ -143,7 +142,6 @@ const watch = (elements, state, i18next) => onChange(state, (path) => {
     }
     case 'feedsItems': {
       renderFeeds(elements, state);
-      updatePosts(state);
       break;
     }
     case 'postsItems': {
