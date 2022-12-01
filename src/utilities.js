@@ -49,8 +49,9 @@ const parse = (data, url) => {
 
 const updatePosts = (watchState) => {
   const { feedsItems, postsItems } = watchState;
+  const interval = 5000;
 
-  feedsItems.forEach((feed) => getData(feed.url)
+  const promises = feedsItems.map((feed) => getData(feed.url)
     .then((data) => {
       const { posts } = parse(data, feed.url);
 
@@ -63,7 +64,8 @@ const updatePosts = (watchState) => {
     })
     .catch((e) => console.log(e.message)));
 
-  setTimeout(() => updatePosts(watchState), 5000);
+  return Promise.all(promises)
+    .finally(() => setTimeout(() => updatePosts(watchState), interval));
 };
 
 export {

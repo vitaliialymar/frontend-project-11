@@ -35,9 +35,10 @@ const app = () => {
     lng: 'ru',
     debug: false,
     resources,
-  }).then(() => updatePosts(state))
+  })
     .then(() => {
       const watchState = watch(elements, state, i18next);
+      const interval = 5000;
 
       elements.input.addEventListener('input', (e) => {
         e.preventDefault();
@@ -58,6 +59,8 @@ const app = () => {
           watchState.openPosts.push(id);
         }
       });
+
+      setTimeout(() => updatePosts(watchState), interval);
     });
 };
 
