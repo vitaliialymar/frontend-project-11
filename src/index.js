@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import resources from './locales/ru.js';
 import getRssData from './getRss.js';
 import watch from './view.js';
-import { updatePosts } from './utilities.js';
+import { updatePosts, interval } from './utilities.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
@@ -38,7 +38,6 @@ const app = () => {
   })
     .then(() => {
       const watchState = watch(elements, state, i18next);
-      const interval = 5000;
 
       elements.input.addEventListener('input', (e) => {
         e.preventDefault();

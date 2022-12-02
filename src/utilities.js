@@ -2,6 +2,8 @@ import axios from 'axios';
 import uniqueId from 'lodash/uniqueId.js';
 import _ from 'lodash';
 
+const interval = 5000;
+
 class ParsingError extends Error {
   constructor(message) {
     super(message);
@@ -49,7 +51,6 @@ const parse = (data, url) => {
 
 const updatePosts = (watchState) => {
   const { feedsItems, postsItems } = watchState;
-  const interval = 5000;
 
   const promises = feedsItems.map((feed) => getData(feed.url)
     .then((data) => {
@@ -72,4 +73,5 @@ export {
   getData,
   parse,
   updatePosts,
+  interval,
 };
