@@ -36,9 +36,7 @@ const parse = (data, url) => {
       const title = item.querySelector('title').textContent;
       const link = item.querySelector('link').textContent;
       const description = item.querySelector('description').textContent;
-      posts.push({
-        id: uniqueId(), title, link, description,
-      });
+      posts.push({ title, link, description });
     });
     return posts;
   };
@@ -48,6 +46,11 @@ const parse = (data, url) => {
 
   return { ...feed, posts };
 };
+
+const addPostsId = (posts) => posts.map((post) => {
+  post.id = uniqueId();
+  return post;
+});
 
 const updatePosts = (watchState) => {
   const { feedsItems, postsItems } = watchState;
@@ -61,7 +64,7 @@ const updatePosts = (watchState) => {
       if (_.isEmpty(difference)) {
         return;
       }
-      watchState.postsItems.unshift(...difference);
+      watchState.postsItems.unshift(...addPostsId(difference));
     })
     .catch((e) => console.log(e.message)));
 
@@ -73,5 +76,6 @@ export {
   getData,
   parse,
   updatePosts,
+  addPostsId,
   interval,
 };

@@ -1,5 +1,5 @@
 import validate from './validator.js';
-import { getData, parse } from './utilities.js';
+import { getData, parse, addPostsId } from './utilities.js';
 
 const getRssData = (watchState) => {
   const { form, feedsItems } = watchState;
@@ -10,11 +10,12 @@ const getRssData = (watchState) => {
     .then((data) => {
       const { posts, ...feed } = parse(data, url);
       watchState.feedsItems.push(feed);
-      watchState.postsItems.push(...posts);
+      watchState.postsItems.push(...addPostsId(posts));
 
+      watchState.form.processState = 'success';
       watchState.form.fields.url = '';
       watchState.form.feedbackValue = 'success';
-      watchState.form.processState = 'sending';
+      watchState.form.processState = 'initial';
       watchState.form.valid = true;
     })
     .catch((error) => {
@@ -33,7 +34,7 @@ const getRssData = (watchState) => {
           break;
       }
       watchState.form.valid = false;
-      watchState.form.processState = 'filling';
+      watchState.form.processState = 'error';
     });
 };
 

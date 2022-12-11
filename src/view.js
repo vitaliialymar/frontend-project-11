@@ -1,5 +1,32 @@
 import onChange from 'on-change';
 
+const handleProcessState = (value, elements) => {
+  switch (value) {
+    case 'initial': {
+      elements.input.disabled = false;
+      elements.submit.disabled = false;
+      break;
+    }
+    case 'sending': {
+      elements.input.disabled = true;
+      elements.submit.disabled = true;
+      break;
+    }
+    case 'success': {
+      elements.form.reset();
+      elements.form.focus();
+      break;
+    }
+    case 'error': {
+      elements.input.disabled = false;
+      elements.submit.disabled = false;
+      break;
+    }
+    default:
+      break;
+  }
+};
+
 const handleValidForm = (elements, state, i18next) => {
   const { feedback, input } = elements;
   const { valid, feedbackValue } = state.form;
@@ -9,19 +36,13 @@ const handleValidForm = (elements, state, i18next) => {
       input.classList.add('is-invalid');
       feedback.textContent = i18next.t(feedbackValue);
       state.form.valid = null;
-      elements.input.disabled = false;
-      elements.submit.disabled = false;
       break;
 
     case true:
       feedback.classList.replace('text-danger', 'text-success');
       input.classList.remove('is-invalid');
       feedback.textContent = i18next.t(feedbackValue);
-      elements.input.disabled = false;
-      elements.submit.disabled = false;
       state.form.valid = null;
-      elements.form.reset();
-      elements.form.focus();
       break;
 
     default:
@@ -29,7 +50,7 @@ const handleValidForm = (elements, state, i18next) => {
   }
 };
 
-const renderFeeds = (elements, state) => {
+const renderFeeds = (elements, state, i18next) => {
   const { feeds } = elements;
   const { feedsItems } = state;
 
@@ -41,7 +62,7 @@ const renderFeeds = (elements, state) => {
     div.classList.add('card-body');
     const h2 = document.createElement('h2');
     h2.classList.add('card-title', 'h4');
-    h2.textContent = 'Фиды';
+    h2.textContent = i18next.t('feeds');
     div.prepend(h2);
     const ul = document.createElement('ul');
     ul.classList.add('list-group', 'border-0', 'rounded-0');
@@ -134,14 +155,14 @@ const openPost = (state) => {
   });
 };
 
-const watch = (elements, state, i18next) => onChange(state, (path) => {
+const watch = (elements, state, i18next) => onChange(state, (path, value) => {
   switch (path) {
     case 'form.valid': {
       handleValidForm(elements, state, i18next);
       break;
     }
     case 'feedsItems': {
-      renderFeeds(elements, state);
+      renderFeeds(elements, state, i18next);
       break;
     }
     case 'postsItems': {
@@ -155,6 +176,10 @@ const watch = (elements, state, i18next) => onChange(state, (path) => {
     }
     case 'openPosts': {
       openPost(state);
+      break;
+    }
+    case 'form.processState': {
+      handleProcessState(value, elements);
       break;
     }
     default:

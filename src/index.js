@@ -12,7 +12,7 @@ const app = () => {
       fields: {
         url: '',
       },
-      processState: '',
+      processState: 'initial',
       valid: null,
       feedbackValue: '',
     },
@@ -41,12 +41,12 @@ const app = () => {
 
       elements.input.addEventListener('input', (e) => {
         e.preventDefault();
-        watchState.form.processState = 'filling';
         const { value } = e.target;
         watchState.form.fields.url = value.trim();
       });
 
       elements.form.addEventListener('submit', (e) => {
+        watchState.form.processState = 'sending';
         e.preventDefault();
         getRssData(watchState);
       });

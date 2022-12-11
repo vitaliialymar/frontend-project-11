@@ -9,6 +9,7 @@ export default {
       generalError: 'Что-то пошло не так...',
       success: 'RSS успешно загружен',
       button: 'Просмотр',
+      feeds: 'Фиды',
     },
   },
 };
