@@ -10,6 +10,7 @@ export default {
       success: 'RSS успешно загружен',
       button: 'Просмотр',
       feeds: 'Фиды',
+      posts: 'Посты',
     },
   },
 };

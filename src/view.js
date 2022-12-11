@@ -100,7 +100,7 @@ const renderPosts = (elements, state, i18next) => {
     div.classList.add('card-body');
     const h2 = document.createElement('h2');
     h2.classList.add('card-title', 'h4');
-    h2.textContent = 'Посты';
+    h2.textContent = i18next.t('posts');
     div.prepend(h2);
 
     const ul = document.createElement('ul');
